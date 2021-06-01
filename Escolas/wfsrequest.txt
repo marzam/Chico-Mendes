@@ -1,0 +1,1 @@
+http://apps.mprj.mp.br:80/geoserver/plataforma/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=plataforma:educ_escolas&SRSNAME=EPSG:4326&outputFormat=SHAPE-ZIP&CQL_FILTER=BBOX(geom,-43.45504760742188,-23.11004929735674,-41.69998168945313,-21.90227796666864,%27EPSG:4326%27)

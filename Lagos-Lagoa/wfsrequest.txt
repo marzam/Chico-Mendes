@@ -1,0 +1,1 @@
+http://apps.mprj.mp.br:80/geoserver/plataforma/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=plataforma:amb_app_lagoas_25k_inea&SRSNAME=EPSG:4326&outputFormat=SHAPE-ZIP&CQL_FILTER=BBOX(geom,-43.5034990310669,-23.03289984774897,-43.3936357498169,-22.99525667147116,%27EPSG:4326%27)

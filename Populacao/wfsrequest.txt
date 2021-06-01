@@ -1,0 +1,1 @@
+http://apps.mprj.mp.br:80/geoserver/plataforma/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=plataforma:bairros_populacao&SRSNAME=EPSG:4326&outputFormat=SHAPE-ZIP&CQL_FILTER=BBOX(geom,-48.394775390625,-24.652009767778697,-36.60095214843751,-19.808054128088575,%27EPSG:4326%27)

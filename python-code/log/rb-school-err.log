@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "fiona/_shim.pyx", line 83, in fiona._shim.gdal_open_vector
+  File "fiona/_err.pyx", line 291, in fiona._err.exc_wrap_pointer
+fiona._err.CPLE_OpenFailedError: shp-rb/recreio-dos-bandeirantes-050.shp: No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "./geopandas-add-attrib-P.v2.0.py", line 20, in <module>
+    mesh    = geopandas.read_file(shp_mesh_file, encodig='utf-8')
+  File "/home/mzamith/Apps/anaconda3/lib/python3.8/site-packages/geopandas/io/file.py", line 160, in _read_file
+    with reader(path_or_bytes, **kwargs) as features:
+  File "/home/mzamith/Apps/anaconda3/lib/python3.8/site-packages/fiona/env.py", line 408, in wrapper
+    return f(*args, **kwargs)
+  File "/home/mzamith/Apps/anaconda3/lib/python3.8/site-packages/fiona/__init__.py", line 256, in open
+    c = Collection(path, mode, driver=driver, encoding=encoding,
+  File "/home/mzamith/Apps/anaconda3/lib/python3.8/site-packages/fiona/collection.py", line 162, in __init__
+    self.session.start(self, **kwargs)
+  File "fiona/ogrext.pyx", line 540, in fiona.ogrext.Session.start
+  File "fiona/_shim.pyx", line 90, in fiona._shim.gdal_open_vector
+fiona.errors.DriverError: shp-rb/recreio-dos-bandeirantes-050.shp: No such file or directory
