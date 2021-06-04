@@ -111,8 +111,9 @@ void keyboardEvent(unsigned char key, int x, int y)
             break;
         case 'u':
         case 'U':
-            cout << "Update" << endl;
-            cout.flush();
+
+            cellularAutomata->update();
+            
           break;
         case 'e':
         case 'E':
@@ -173,7 +174,7 @@ void mainloop(void)
 int main(int argc, char**argv)
 {
     cellularAutomata = new CellularAutomata();
-    cellularAutomata->loadConfigFile("config.bin");
+    cellularAutomata->loadConfigFile("config1.bin");
     cellularAutomata->setDiscritization(50.0, 50.0);
     START_STOPWATCH(stopwatch);
 

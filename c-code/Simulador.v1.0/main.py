@@ -11,7 +11,7 @@ if __name__ == "__main__":
     print('Demo')
     ca = CellularAutomata()
 
-    dir      = '/home/mzamith/Documents/Develop/qgis-3/RJ-01-exemplos.py/RecreioBandeirates/RecreioBandeirates.shp'
+    dir      = '/home/mzamith/Documents/Develop/qgis-3/RJ-01-ChicoMendes.py/RecreioBandeirates/'
     lattice  = 'recreio-dos-bandeirantes-050.shp'
     #output file sabed on output_dic
     lattice_school  = 'recreio-dos-bandeirantes-050-escolas.shp'
@@ -51,4 +51,4 @@ if __name__ == "__main__":
             change = True
         ca.setData(i_x, i_y, int(id), int(bus), int(health), int(school), x[0], y[0], int(state), change)
 
-    ca.saveConfigFile('config.bin');
+    ca.saveConfigFile('config1.bin');

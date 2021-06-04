@@ -49,6 +49,7 @@ public:
     const static int EMPTY            = 0;
     const static int OCCUPIED         = 1;
     const static int LAKE             = 2;
+
     const static int SUITABILITY      = 3;
     const static int INHERITED        = 4;
     const static int ECOLOGICAL       = 5;
@@ -61,7 +62,7 @@ public:
 		void clear(void);
 		void loadConfigFile(const string& configFile);
 		void saveConfigFile(const string& configFile);
-    int getWidth(void) { return mCellX; }
+    int getWidth(void)  { return mCellX; }
     int getHeight(void) { return mCellY; }
     stCell getCell(int, int);
     int getState(int, int);
@@ -70,6 +71,7 @@ public:
     void setWeightSuitability(void);
     void printEmptyArea(void);
     void update(void);
+    double random(void);
 protected:
 		int mCellX;   //Space in X
     int mCellY;   //Space in Y --> number of the roads
@@ -77,6 +79,7 @@ protected:
     double mDeltaX;
     double mDeltaY; //in meters !!!!
 		stCell *mCellList;
+    int mRadius;
     int *mCellListEmpty; //store index of mCellList
     int *mLattice0,
         *mLattice1;
