@@ -4,39 +4,7 @@ import sys
 from geopandas import GeoSeries
 from shapely.geometry import Polygon, MultiPolygon
 import ufrrjgeo
-#-------------------------------------------------------------------------------
-'''
-Add a new attribute layer in mesh geopandas dataframa - it is another column
-This procedure is based on distance in global coordiante domain
-'''
-def addAttribSetValueFromPointsAABBLattice( x_g_max, x_g_min, y_g_max, y_g_min, attrib):
-    size = len(attrib)
-    '''
-    for i in range(0, size):
-        attrib.loc[i, 'id'] = i
-    '''
-    for i in range(0, size):
-        print(i, '/', size)
-        a_x, a_y = attrib.iloc[i].geometry.centroid.xy
-        x_p1 = a_x[0]
-        y_p1 = a_y[0]
 
-        in_side = True
-        if x_p1 < x_g_min:
-            in_side = False
-
-        if x_p1 > x_g_max:
-            in_side = False
-
-        if y_p1 < y_g_min:
-            in_side = False
-
-        if y_p1 > y_g_max:
-            in_side = False
-
-        if in_side == True:
-            attrib.loc[i, 'in_out'] = 1
-    return attrib
 #-------------------------------------------------------------------------------
 
 

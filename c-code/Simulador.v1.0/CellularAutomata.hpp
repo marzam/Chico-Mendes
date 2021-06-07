@@ -66,6 +66,9 @@ public:
     int getHeight(void) { return mCellY; }
     stCell getCell(int, int);
     int getState(int, int);
+    int getState(int);
+    int getCellSimulated(int);
+    int getCellSimulatedSize(void);
     void buildList(void);
     void addAttrib(int, int, int, int, double);
     void setWeightSuitability(void);
@@ -75,12 +78,12 @@ public:
 protected:
 		int mCellX;   //Space in X
     int mCellY;   //Space in Y --> number of the roads
-    int mEmptySize;
+    int mSimulatedSize;
     double mDeltaX;
     double mDeltaY; //in meters !!!!
 		stCell *mCellList;
     int mRadius;
-    int *mCellListEmpty; //store index of mCellList
+    int *mCellSimulatedList; //store index of mCellList
     int *mLattice0,
         *mLattice1;
 

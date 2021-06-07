@@ -52,6 +52,6 @@ os.system(command)
 #os.system(command)
 
 #command = './geopandas-add-attrib-MP.v2.0.py {} {}{} {}{} {} > {} 2> {} &'.format(bus_line, output_dir, output_mesh, output_dir, output_mesh_bus, field_bus, log_bus_std, log_bus_err)
-#command = './geopandas-add-attrib-MP.v2.1.py {} {}{} {}{} {} '.format(bus_line, output_dir, output_mesh, output_dir, output_mesh_bus, field_bus, log_bus_std, log_bus_err)
+    #command = './geopandas-add-attrib-MP.v2.1.py {} {}{} {}{} {} '.format(bus_line, output_dir, output_mesh, output_dir, output_mesh_bus, field_bus, log_bus_std, log_bus_err)
 #os.system(command)
 #fazer do ponto de ônibus

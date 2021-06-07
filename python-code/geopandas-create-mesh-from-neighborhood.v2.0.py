@@ -42,7 +42,7 @@ def select_city_district(shp_file_name, enco, state_name, district_name, discret
     print('     Discrete delta:', x_delta, ' ', y_delta, ' -> ', discretization, ' (m)')
     print('               dist:', x_dist, ' ', y_dist)
     print('     Width / height:', w, h)
-    sys.exit(0)
+
     #informar a quantidade de atributos
     mesh = ufrrjgeo.create_geoseries(city, x_delta, y_delta, x_max, x_min, y_max,  y_min)
     mesh = ufrrjgeo.build_mesh_geometry(mesh, district, x_g_min - (10*x_delta), district_name)
