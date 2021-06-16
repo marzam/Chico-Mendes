@@ -28,7 +28,7 @@ mRadius(1)
 {};
 
 CellularAutomata::~CellularAutomata(){
-  clear();
+  //clear();
 };
 
 
@@ -67,7 +67,7 @@ void CellularAutomata::setData(int _x, int _y,
                                bool _change){
 
    int  p = _y * mCellX + _x;
-   assert((_x < mCellX) && (_y < mCellY));
+   assert(p < (mCellX *  mCellY));
 
    mCellList[p].id = _id;
    mCellList[p].bus = _bus;
@@ -105,16 +105,29 @@ void CellularAutomata::setDiscritization(double dx, double dy){
 };
 
 void CellularAutomata::clear(void){
+
+  if (mCellSimulatedList != NULL)
+    free(mCellSimulatedList);
+
+
+
   if (mCellList != NULL)
      free(mCellList);
+
+
   if (mCellSimulatedList != NULL)
     free(mCellSimulatedList);
-  if (mCellSimulatedList != NULL)
-    free(mCellSimulatedList);
+
+
+
   if (mLattice0 != NULL)
     free(mLattice0);
+
+
   if (mLattice1 != NULL)
     free(mLattice1);
+
+
   if (mWeight != NULL)
       free(mWeight);
 
@@ -212,7 +225,7 @@ int CellularAutomata::getState(int _x, int _y){
 };
 
 int CellularAutomata::getState(int index){
-  
+
   assert(index < mCellX * mCellY);
   return mLattice0[index];
 
@@ -230,29 +243,36 @@ int CellularAutomata::getCellSimulatedSize(void){
 };
 
 void CellularAutomata::buildList(void){
-
   int count = 0;
+  for (int i = 0; i < mCellX * mCellY; i++){
+    if (mLattice0[i] == CellularAutomata::EMPTY)
+     count++;
+  }
 
+  count++;
+  cout << "Count:" << count << endl;
+  if (mCellSimulatedList != NULL){
+    free(mCellSimulatedList);
+    mCellSimulatedList = NULL;
+  }
 
-    for (int i = 0; i < mCellX * mCellY; i++){
+  mSimulatedSize = count;
+  assert(posix_memalign((void**) &mCellSimulatedList, ALIGN, count *  sizeof(int)) == 0);
+  memset(mCellSimulatedList, 0x00, count *  sizeof(int) );
 
-      if (mLattice0[i] == CellularAutomata::EMPTY)
-       count++;
+  int j = 0;
 
+  for (int i = 0; i < mCellX * mCellY; i++){
+    if (mLattice0[i] == CellularAutomata::EMPTY){
+     mCellSimulatedList[j] = i;
+     j++;
+     if (j == mSimulatedSize){
+       cout << j << " i:" << i << " mSimulatedSize:" << mSimulatedSize << endl;
+       exit(-1);
+     }
 
     }
-    cout << "Count:" << count << endl;
-
-    assert(posix_memalign((void**) &mCellSimulatedList, ALIGN, count *  sizeof(int)) == 0);
-    assert(mCellSimulatedList != NULL);
-    mSimulatedSize = count;
-    int j = 0;
-    for (int i = 0; i < mCellX * mCellY; i++){
-      if (mLattice0[i] == CellularAutomata::EMPTY){
-       mCellSimulatedList[j] = i;
-       j++;
-      }
-    }//end-for (int i = 0; i < mCellX * mCellY; i++){
+  }//end-for (int i = 0; i < mCellX * mCellY; i++){
 
 };
 

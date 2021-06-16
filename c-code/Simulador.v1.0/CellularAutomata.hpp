@@ -83,9 +83,10 @@ protected:
     double mDeltaY; //in meters !!!!
 		stCell *mCellList;
     int mRadius;
-    int *mCellSimulatedList; //store index of mCellList
+    
     int *mLattice0,
-        *mLattice1;
+        *mLattice1,
+        *mCellSimulatedList;
 
 
     stWeight *mWeight;

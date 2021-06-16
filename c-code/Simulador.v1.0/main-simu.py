@@ -9,9 +9,13 @@ import geopandas
 
 if __name__ == "__main__":
     print('Simulação')
-    print('\t Loading data')
-    ca = CellularAutomata()
+    width  = 278
+    height = 120
+    steps  = 3
+    outputfile  = 'simulated/simulate-steps-{}.shp'.format(steps)
 
+
+    ca = CellularAutomata()
     dir      = '/home/mzamith/Documents/Develop/qgis-3/RJ-01-ChicoMendes.py/RecreioBandeirates/'
     lattice  = 'recreio-dos-bandeirantes-050.shp'
     #output file sabed on output_dic
@@ -19,8 +23,7 @@ if __name__ == "__main__":
     lattice_health  = 'recreio-dos-bandeirantes-050-health.shp'
     lattice_bus     = 'recreio-dos-bandeirantes-050-bus.shp'
     lattice_CM      = 'chico-mendes-malha-050.shp'
-    width  = 278
-    height = 120
+    print('\t Loading data')
     g_lattice = geopandas.read_file(dir + lattice, encodig='utf8')
     g_school  = geopandas.read_file(dir + lattice_school, encodig='utf8')
     g_health  = geopandas.read_file(dir + lattice_health, encodig='utf8')
@@ -64,8 +67,20 @@ if __name__ == "__main__":
     ca.buildList()
     print('\t\t setWeightSuitability')
     ca.setWeightSuitability()
-    print('\t\t update')
-    ca.update()
-    print('\t\tSimulated size: ', ca.getCellSimulatedSize())
+    for i in range(0, steps):
+        print('\t\t\t update - step ', steps)
+        ca.update()
+
     for i in range(0, ca.getCellSimulatedSize()):
         index = ca.getCellSimulated(i);
+        s = ca.getState(index);
+        g_lattice.loc[index, 'occupied'] = s
+
+
+    tmp = g_lattice.loc[g_lattice['occupied'] == 1]
+    tmp.to_file(outputfile)
+    print(outputfile, ' saved')
+    print('Ploting map')
+    fig, ax = plt.subplots()
+    g_ChicoM.plot(ax=ax, color='white', edgecolor='red')
+    plt.show()
