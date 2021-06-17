@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cstddef>
 #include <cmath>
+#include <omp.h>
+#include <thread>
 using namespace std;
 //---- Functions
 double  getDistance(stCell A, stCell B){
@@ -243,36 +245,85 @@ int CellularAutomata::getCellSimulatedSize(void){
 };
 
 void CellularAutomata::buildList(void){
-  int count = 0;
-  for (int i = 0; i < mCellX * mCellY; i++){
-    if (mLattice0[i] == CellularAutomata::EMPTY)
-     count++;
+  int count = 0,
+      *ptr  = NULL,
+      ncores = thread::hardware_concurrency(),
+      offset = (mCellX * mCellY) / ncores,
+      j = 0;
+
+  assert(posix_memalign((void**) &ptr, ALIGN, ncores *  sizeof(int)) == 0);
+
+
+#pragma omp parallel
+{
+  int id = omp_get_thread_num();
+  int junk = offset;
+  if (id == (ncores - 1)){
+    junk += ((mCellX * mCellY) % ncores);
   }
+  ptr[id] = 0;
 
-  count++;
-  cout << "Count:" << count << endl;
-  if (mCellSimulatedList != NULL){
-    free(mCellSimulatedList);
-    mCellSimulatedList = NULL;
-  }
-
-  mSimulatedSize = count;
-  assert(posix_memalign((void**) &mCellSimulatedList, ALIGN, count *  sizeof(int)) == 0);
-  memset(mCellSimulatedList, 0x00, count *  sizeof(int) );
-
-  int j = 0;
-
-  for (int i = 0; i < mCellX * mCellY; i++){
+  for (int i = id * junk; i < ((id + 1) * junk); i++){
+    assert(i < (mCellX * mCellY));
     if (mLattice0[i] == CellularAutomata::EMPTY){
-     mCellSimulatedList[j] = i;
-     j++;
-     if (j == mSimulatedSize){
-       cout << j << " i:" << i << " mSimulatedSize:" << mSimulatedSize << endl;
-       exit(-1);
-     }
+     ptr[id]++;
+     //count++;
+   }//end-if (mLattice0[i] == CellularAutomata::EMPTY){
+  }//end-for (int i = 0; i < mCellX * mCellY; i++){
+  #pragma omp barrier
+  #pragma omp single
+  {
+    count = 0;
+    for (int i = 0; i < ncores; i++)
+      count += ptr[i];
+    cout << "Count:" << count << endl;
+
+    if (mCellSimulatedList != NULL){
+      free(mCellSimulatedList);
+      mCellSimulatedList = NULL;
+    }
+
+    mSimulatedSize = count;
+    assert(posix_memalign((void**) &mCellSimulatedList, ALIGN, count *  sizeof(int)) == 0);
+    memset(mCellSimulatedList, 0x00, count *  sizeof(int) );
+
+  }//end-#pragma omp single
+  #pragma omp barrier
+//}//end-#pragma omp parallel
+
+  //offset = (mCellX * mCellY) / ncores;
+//#pragma omp parallel shared(mCellSimulatedList, j)
+//{
+  /*
+  int id = omp_get_thread_num();
+  int junk = offset;
+  if (id == (ncores - 1)){
+    junk += ((mCellX * mCellY) % ncores);
+  }
+  */
+
+  for (int i = id * junk; i < ((id + 1) * junk); i++){
+    if (mLattice0[i] == CellularAutomata::EMPTY){
+       #pragma omp critical
+       {
+           mCellSimulatedList[j] = i;
+           if (j == mSimulatedSize){
+             cout << j << " i:" << i << " mSimulatedSize:" << mSimulatedSize << endl;
+             exit(-1);
+           }
+           j++;
+       }//end-#pragma omp atomic update
+
 
     }
   }//end-for (int i = 0; i < mCellX * mCellY; i++){
+
+
+}
+
+
+  free(ptr);
+
 
 };
 
@@ -323,6 +374,12 @@ void CellularAutomata::setWeightSuitability(void){
   double b_max = 0.0,
          s_max = 0.0,
          h_max = 0.0;
+
+//#pragma omp parallel
+//{
+#pragma omp parallel
+{
+  #pragma omp for reduction(+: b_max, s_max, h_max)
   for (int i = 0; i < mCellX * mCellY; i++){
     stCell src = mCellList[i];
     b_max += static_cast<double>(src.bus);
@@ -330,8 +387,10 @@ void CellularAutomata::setWeightSuitability(void){
     h_max += static_cast<double>(src.school);
 
   }//end-for (int i = 0; i < mCellX * mCellY; i++){
+//}
+  #pragma omp barrier
 
-
+  #pragma omp for
   for (int i = 0; i < mCellX * mCellY; i++){
     double w_b = 0.0,
            w_s = 0.0,
@@ -358,11 +417,13 @@ void CellularAutomata::setWeightSuitability(void){
     assert(!isinf(w_h) && !isnan(w_h));
 
   }//end-for (int i = 0; i < mCellX * mCellY; i++){
+}//end-#pragma omp parallel
 };
 
 
 void CellularAutomata::update(void){
-    cout << "Updated..." << endl;
+    double elapsedtime = omp_get_wtime();
+    cout << "Updated... \t";
     int r = mRadius;
 
     for (int k = 0; k < mSimulatedSize; k++){
@@ -415,6 +476,8 @@ void CellularAutomata::update(void){
     mLattice1 = mLattice0;
     mLattice0 = swap;
 
+    elapsedtime = omp_get_wtime() - elapsedtime;
+    cout << "elapsedtime: " << elapsedtime << " in seconds" << endl;
 };;
 
 double CellularAutomata::random(void){ return static_cast <double> (rand() % 65535 + 1) / 65535.0f; };

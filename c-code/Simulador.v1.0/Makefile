@@ -14,7 +14,7 @@ LIBFILE      = liboccupCA.so
 APPLICATION  = -D_APPLICATION=\"$(EXEFILE)\"
 #CPUCC       = /opt/intel/bin/icpc
 CPUCC       = g++ #/opt/gnu-gcc/bin/g++
-CPPFLAGS    = --std=c++11 -m64 -Wno-reorder #     -Wunused-variable #-Wno-conversion-null -Wdelete-non-virtual-dtor
+CPPFLAGS    = --std=c++11 -m64 -Wno-reorder -fopenmp#     -Wunused-variable #-Wno-conversion-null -Wdelete-non-virtual-dtor
 DEFS        = $(APPLICATION)  $(VERSION) -DALIGN=64
 
 INCLUDES  = -I.                           \

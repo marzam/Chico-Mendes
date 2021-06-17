@@ -11,7 +11,7 @@ if __name__ == "__main__":
     print('Simulação')
     width  = 278
     height = 120
-    steps  = 3
+    steps  = 4
     outputfile  = 'simulated/simulate-steps-{}.shp'.format(steps)
 
 
@@ -80,7 +80,3 @@ if __name__ == "__main__":
     tmp = g_lattice.loc[g_lattice['occupied'] == 1]
     tmp.to_file(outputfile)
     print(outputfile, ' saved')
-    print('Ploting map')
-    fig, ax = plt.subplots()
-    g_ChicoM.plot(ax=ax, color='white', edgecolor='red')
-    plt.show()
