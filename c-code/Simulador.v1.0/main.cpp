@@ -113,13 +113,16 @@ void keyboardEvent(unsigned char key, int x, int y)
         case 'U':
 
             cellularAutomata->update();
-            
+
           break;
         case 'e':
         case 'E':
              start = false;
             break;
 
+        case 'p':
+        case 'P':cellularAutomata->printTotalCellOccupied();
+              break;
         case 'q':
         case 'Q':
         case 27:

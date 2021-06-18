@@ -47,8 +47,8 @@ class CellularAutomata
 
 public:
     const static int EMPTY            = 0;
-    const static int OCCUPIED         = 1;
-    const static int LAKE             = 2;
+    const static int OCCUPIED         = 100;
+    const static int LAKE             = 200;
 
     const static int SUITABILITY      = 3;
     const static int INHERITED        = 4;
@@ -75,15 +75,17 @@ public:
     void printEmptyArea(void);
     void update(void);
     double random(void);
+    void printTotalCellOccupied(void);
 protected:
 		int mCellX;   //Space in X
     int mCellY;   //Space in Y --> number of the roads
+    int mSteps;
     int mSimulatedSize;
     double mDeltaX;
     double mDeltaY; //in meters !!!!
 		stCell *mCellList;
     int mRadius;
-    
+
     int *mLattice0,
         *mLattice1,
         *mCellSimulatedList;

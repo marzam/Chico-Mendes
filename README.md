@@ -10,3 +10,4 @@ Chico Mendes park illegal occupation simulation based on Cellular Automata is de
 
 - June 7th, 2021 -> Bugs fix
 - June 17th, 2021 -> include omp directive in order to reduce the initialization time
+- June 18th, 2021 -> improve CA rule

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     width  = 278
     height = 120
     steps  = 4
-    outputfile  = 'simulated/simulate-steps-{}.shp'.format(steps)
+    outputfile  = 'simulated/simulate-steps'
 
 
     ca = CellularAutomata()
@@ -67,16 +67,19 @@ if __name__ == "__main__":
     ca.buildList()
     print('\t\t setWeightSuitability')
     ca.setWeightSuitability()
-    for i in range(0, steps):
-        print('\t\t\t update - step ', steps)
+
+    for t in range(0, steps):
+
+        filename = outputfile + '.{}.shp'.format(t)
+        print('\t\t\t update - output file: ', filename)
         ca.update()
 
-    for i in range(0, ca.getCellSimulatedSize()):
-        index = ca.getCellSimulated(i);
-        s = ca.getState(index);
-        g_lattice.loc[index, 'occupied'] = s
-
-
-    tmp = g_lattice.loc[g_lattice['occupied'] == 1]
-    tmp.to_file(outputfile)
-    print(outputfile, ' saved')
+        print('\t\t\t get cell state')
+        for i in range(0, ca.getCellSimulatedSize()):
+            index = ca.getCellSimulated(i);
+            s = ca.getState(index);
+            g_lattice.loc[index, 'occupied'] = s
+        print('\t\t\t export output')
+        tmp = g_lattice.loc[g_lattice['occupied'] == 1]
+        tmp.to_file(filename)
+        print(filename, ' saved')

@@ -18,6 +18,7 @@ double  getDistance(stCell A, stCell B){
 CellularAutomata::CellularAutomata():
 mCellX(0),
 mCellY(0),
+mSteps(0),
 mSimulatedSize(0),
 mDeltaX(0.0),
 mDeltaY(0.0),
@@ -37,7 +38,7 @@ CellularAutomata::~CellularAutomata(){
 void CellularAutomata::setLattice(int _x, int _y){
   clear();
   mCellX = _x; mCellY = _y;
-
+  mSteps = 0;
   assert(posix_memalign((void**) &mCellList, ALIGN, mCellX * mCellY *  sizeof(stCell)) == 0);
   assert(mCellList != NULL);
 
@@ -164,8 +165,11 @@ void CellularAutomata::loadConfigFile(const string& configFile){
         input.read(reinterpret_cast<char*> (mLattice0), mCellX * mCellY * sizeof(int));
         input.close();
         cout << "File loaded [" << fileName << "]" << endl;
-        for (int i = 0; i < mCellX * mCellY; i++)
+        //Acertar@@@
+        for (int i = 0; i < mCellX * mCellY; i++){
+          mLattice0[i] *= 100;
           mLattice1[i] = mLattice0[i];
+        }
 
 /*
         assert(posix_memalign((void**) &mLattice0, ALIGN, mCellX * mCellY *  sizeof(int)) == 0);
@@ -424,6 +428,7 @@ void CellularAutomata::setWeightSuitability(void){
 void CellularAutomata::update(void){
     double elapsedtime = omp_get_wtime();
     cout << "Updated... \t";
+    mSteps++;
     int r = mRadius;
 
     for (int k = 0; k < mSimulatedSize; k++){
@@ -449,22 +454,31 @@ void CellularAutomata::update(void){
              double b = mWeight[p].bus;
              double h = mWeight[p].health;
              double s = mWeight[p].school;
-             double W = 0.0f;
+             double state = 0.0f;
              if (mLattice0[p] == CellularAutomata::OCCUPIED){
-               W = 1.0f;
+               state = static_cast <double> (mLattice0[p]);
              }
-             sum +=  (W * (b + h + s));
+             sum +=  (b * 1.0) + (h * 0.5) + (s * 0.25) + state;
              elements++;
            }//if (!((rj == 0) && (ri == 0))){
 
 
          }//end-for (int ri = -r; ri <= r; ri++){
        }//end-for (int rj = -r; rj <= r; rj++){
-       sum /= elements;
+
+       double S = sum / elements;
+       double weight_time = static_cast<double>(mSteps);
+       double I = 100.0 * exp(weight_time * -0.1); //AQUI!!!!
+       //double V = 1.0f + powf(-log(random()), 0.25f);
+       double NS = (S - I) ;
+       NS =  max(NS, 0.0);
+       NS =  min(NS, 100.0);
        int aIm = mLattice0[ip];
+
        double prob = random();
-       if ((prob < sum)  && (aIm == CellularAutomata::EMPTY)){
-         mLattice1[ip] = CellularAutomata::OCCUPIED;
+       //if ((prob < sum)  && (aIm == CellularAutomata::EMPTY)){
+      if (((prob * 100.0) < NS)  && (aIm == CellularAutomata::EMPTY)){
+           mLattice1[ip] = CellularAutomata::OCCUPIED;
        }else{
          mLattice1[ip] = mLattice0[ip];
        }
@@ -481,3 +495,12 @@ void CellularAutomata::update(void){
 };;
 
 double CellularAutomata::random(void){ return static_cast <double> (rand() % 65535 + 1) / 65535.0f; };
+
+void CellularAutomata::printTotalCellOccupied(void){
+    int total = 0;
+    for (int i = 0; i < mSimulatedSize; i++){
+      if (mLattice0[mCellSimulatedList[i]] == CellularAutomata::OCCUPIED)
+        total++;
+    }
+    cout << "In " << mSteps << " steps, " << total << " cells were occupied!" << endl;
+};
